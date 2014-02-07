@@ -12,14 +12,20 @@ namespace UndoRedo.Tests.Commands
     [TestClass]
     public class ChangeWidthCommandTests
     {
+        private Shape shape;
+        private ChangeWidthCommand changeWidthCommand;
+
+        public ChangeWidthCommandTests()
+        {
+            shape = new Shape();
+            shape.Width = 10;
+            changeWidthCommand = new ChangeWidthCommand(shape, 50);
+        }
+
         [TestMethod]
         public void ExecuteChangesTheWidthOfTheShape()
         {
-            var shape = new Shape();
-            shape.Width = 10;
-
-            var command = new ChangeWidthCommand(shape, 50);
-            command.Execute();
+            changeWidthCommand.Execute();
 
             Assert.AreEqual(50, shape.Width);
         }
@@ -27,12 +33,8 @@ namespace UndoRedo.Tests.Commands
         [TestMethod]
         public void UnexecuteSetsTheWidthBackToItsOriginalWidth()
         {
-            var shape = new Shape();
-            shape.Width = 10;
-
-            var command = new ChangeWidthCommand(shape, 50);
-            command.Execute();
-            command.Unexecute();
+            changeWidthCommand.Execute();
+            changeWidthCommand.Unexecute();
 
             Assert.AreEqual(10, shape.Width);
         }
@@ -40,11 +42,6 @@ namespace UndoRedo.Tests.Commands
         [TestMethod]
         public void ConstructorDoesNotChangeValue()
         {
-            var shape = new Shape();
-            shape.Width = 10;
-
-            var command = new ChangeWidthCommand(shape, 50);
-
             Assert.AreEqual(10, shape.Width);
         }
     }

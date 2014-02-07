@@ -8,14 +8,20 @@ namespace UndoRedo.Tests.Commands
     [TestClass]
     public class ChangeHeightCommandTests
     {
+        private Shape shape;
+        private ChangeHeightCommand changeHeightCommand;
+
+        public ChangeHeightCommandTests()
+        {
+            shape = new Shape();
+            shape.Height = 10;
+            changeHeightCommand = new ChangeHeightCommand(shape, 50);
+        }
+
         [TestMethod]
         public void ExecuteChangesTheHeightOfTheShape()
         {
-            var shape = new Shape();
-            shape.Height = 10;
-
-            var command = new ChangeHeightCommand(shape, 50);
-            command.Execute();
+            changeHeightCommand.Execute();
 
             Assert.AreEqual(50, shape.Height);
         }
@@ -23,12 +29,8 @@ namespace UndoRedo.Tests.Commands
         [TestMethod]
         public void UnexecuteSetsTheHeightBackToItsOriginalHeight()
         {
-            var shape = new Shape();
-            shape.Height = 10;
-
-            var command = new ChangeHeightCommand(shape, 50);
-            command.Execute();
-            command.Unexecute();
+            changeHeightCommand.Execute();
+            changeHeightCommand.Unexecute();
 
             Assert.AreEqual(10, shape.Height);
         }
@@ -36,11 +38,6 @@ namespace UndoRedo.Tests.Commands
         [TestMethod]
         public void ConstructorDoesNotChangeValue()
         {
-            var shape = new Shape();
-            shape.Height = 10;
-
-            var command = new ChangeHeightCommand(shape, 50);
-
             Assert.AreEqual(10, shape.Height);
         }
     }
