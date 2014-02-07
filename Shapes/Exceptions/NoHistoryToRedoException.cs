@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UndoRedo.Shapes
+namespace UndoRedo.Shapes.Exceptions
 {
-    public class Shape
+    public class NoHistoryToRedoException : Exception
     {
-        public Int32 Height { get; set; }
-        public Int32 Width { get; set; }
     }
 }

@@ -50,7 +50,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CommandProcessorTests.cs" />
     <Compile Include="Commands\ChangeHeightCommandTests.cs" />
+    <Compile Include="Commands\ChangeWidthCommandTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

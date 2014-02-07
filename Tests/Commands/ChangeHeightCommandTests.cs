@@ -32,5 +32,16 @@ namespace UndoRedo.Tests.Commands
 
             Assert.AreEqual(10, shape.Height);
         }
+
+        [TestMethod]
+        public void ConstructorDoesNotChangeValue()
+        {
+            var shape = new Shape();
+            shape.Height = 10;
+
+            var command = new ChangeHeightCommand(shape, 50);
+
+            Assert.AreEqual(10, shape.Height);
+        }
     }
 }
