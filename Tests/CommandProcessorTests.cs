@@ -13,32 +13,32 @@ namespace UndoRedo.Tests
     [TestClass]
     public class CommandProcessorTests
     {
-        private CommandProcessor shapeEditor;
+        private CommandProcessor commandProcessor;
         private Shape shape;
 
         public CommandProcessorTests()
         {
-            shapeEditor = new CommandProcessor();
+            commandProcessor = new CommandProcessor();
             shape = new Shape();
         }
 
         [TestMethod, ExpectedException(typeof(NoHistoryToUndoException))]
         public void ExceptionIsThrownIfUndoIsCalledBeforeDo()
         {
-            shapeEditor.Undo();
+            commandProcessor.Undo();
         }
 
         [TestMethod, ExpectedException(typeof(NoHistoryToRedoException))]
         public void ExceptionIsThrownIfRedoIsCalledBeforeUndo()
         {
-            shapeEditor.Redo();
+            commandProcessor.Redo();
         }
 
         [TestMethod]
         public void EditExecutesCommand()
         {
             var command = new ChangeHeightCommand(shape, 10);
-            shapeEditor.Do(command);
+            commandProcessor.Do(command);
 
             Assert.AreEqual(10, shape.Height);
         }
@@ -47,29 +47,29 @@ namespace UndoRedo.Tests
         public void EditEnablesUndo()
         {
             var command = new ChangeHeightCommand(shape, 10);
-            shapeEditor.Do(command);
+            commandProcessor.Do(command);
 
-            Assert.IsTrue(shapeEditor.CanUndo());
+            Assert.IsTrue(commandProcessor.CanUndo());
         }
 
         [TestMethod]
         public void UndoWithOneCommandDisablesUndo()
         {
             var command = new ChangeHeightCommand(shape, 10);
-            shapeEditor.Do(command);
-            shapeEditor.Undo();
+            commandProcessor.Do(command);
+            commandProcessor.Undo();
 
-            Assert.IsFalse(shapeEditor.CanUndo());
+            Assert.IsFalse(commandProcessor.CanUndo());
         }
 
         [TestMethod]
         public void UndoWithOneCommandEnablesRedo()
         {
             var command = new ChangeHeightCommand(shape, 10);
-            shapeEditor.Do(command);
-            shapeEditor.Undo();
+            commandProcessor.Do(command);
+            commandProcessor.Undo();
 
-            Assert.IsTrue(shapeEditor.CanRedo());
+            Assert.IsTrue(commandProcessor.CanRedo());
         }
 
         [TestMethod]
@@ -77,28 +77,28 @@ namespace UndoRedo.Tests
         {
             var command = new ChangeHeightCommand(shape, 10);
 
-            Assert.IsFalse(shapeEditor.CanRedo());
-            Assert.IsFalse(shapeEditor.CanUndo());
+            Assert.IsFalse(commandProcessor.CanRedo());
+            Assert.IsFalse(commandProcessor.CanUndo());
         }
 
         [TestMethod]
         public void RedoWithOneCommandEnablesUndo()
         {
             var command = new ChangeHeightCommand(shape, 10);
-            shapeEditor.Do(command);
-            shapeEditor.Undo();
-            shapeEditor.Redo();
+            commandProcessor.Do(command);
+            commandProcessor.Undo();
+            commandProcessor.Redo();
 
-            Assert.IsTrue(shapeEditor.CanUndo());
+            Assert.IsTrue(commandProcessor.CanUndo());
         }
 
         [TestMethod]
         public void RedoCallsUnexecute()
         {
             var command = new ChangeHeightCommand(shape, 10);
-            shapeEditor.Do(command);
-            shapeEditor.Undo();
-            shapeEditor.Redo();
+            commandProcessor.Do(command);
+            commandProcessor.Undo();
+            commandProcessor.Redo();
 
             Assert.AreEqual(10, shape.Height);
         }
@@ -108,8 +108,8 @@ namespace UndoRedo.Tests
         {
             var command = new ChangeHeightCommand(shape, 10);
 
-            ChangeHeightManyTimes(shapeEditor, shape, 10);
-            UndoMany(shapeEditor, 3);
+            ChangeHeightManyTimes(commandProcessor, shape, 10);
+            UndoMany(commandProcessor, 3);
 
             Assert.AreEqual(60, shape.Height);
         }
@@ -119,9 +119,9 @@ namespace UndoRedo.Tests
         {
             var command = new ChangeHeightCommand(shape, 10);
 
-            ChangeHeightManyTimes(shapeEditor, shape, 10);
-            UndoMany(shapeEditor, 5);
-            RedoMany(shapeEditor, 3);
+            ChangeHeightManyTimes(commandProcessor, shape, 10);
+            UndoMany(commandProcessor, 5);
+            RedoMany(commandProcessor, 3);
 
             Assert.AreEqual(70, shape.Height);
         }
@@ -131,11 +131,11 @@ namespace UndoRedo.Tests
         {
             var command = new ChangeHeightCommand(shape, 10);
 
-            ChangeHeightManyTimes(shapeEditor, shape, 10);
-            UndoMany(shapeEditor, 3);
-            shapeEditor.Do(new ChangeWidthCommand(shape, 100));
+            ChangeHeightManyTimes(commandProcessor, shape, 10);
+            UndoMany(commandProcessor, 3);
+            commandProcessor.Do(new ChangeWidthCommand(shape, 100));
 
-            Assert.IsFalse(shapeEditor.CanRedo());
+            Assert.IsFalse(commandProcessor.CanRedo());
         }
         
         private void ChangeHeightManyTimes(CommandProcessor editor, Shape shape, Int32 numberOfTimes)
